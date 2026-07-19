@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<h2>All Destinations</h2>
+
+
+<a href="{% url 'destination_create' %}" class="btn btn-primary mb-3">Add Destination</a>
+
+<div class="row">
+  {% for dest in destinations %}
+    <div class="col-md-4">
+      <div class="card mb-4 shadow-sm">
+        <img src="{{ dest.image.url }}" class="card-img-top" alt="{{ dest.name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ dest.name }}</h5>
+          <p class="card-text">{{ dest.location }}</p>
+          <a href="{% url 'destination_detail' dest.pk %}" class="btn btn-info">View</a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

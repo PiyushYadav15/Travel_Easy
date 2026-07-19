@@ -1,0 +1,12 @@
+{% extends 'main.html' %}
+{% block content %}
+<h2 class="mb-4">Registration Page</h2>
+
+
+<form method="POST" class="card p-4 shadow-sm">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Register</button>
+</form>
+<p class="mt-3">Already have an account? <a href="{% url 'signin' %}">Login here</a></p>
+{% endblock %}

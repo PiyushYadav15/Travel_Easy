@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<div class="container">
+  <h2>{{ destination.name }}</h2>
+  <img src="{{ destination.image.url }}" class="img-fluid mb-3" alt="{{ destination.name }}">
+  <p><strong>Location:</strong> {{ destination.location }}</p>
+  <p><strong>Type:</strong> {{ destination.type }}</p>
+  <p><strong>Rating:</strong> {{ destination.rating }}</p>
+  <p>{{ destination.description }}</p>
+
+  <a href="{% url 'destination_update' destination.pk %}" class="btn btn-warning">Edit</a>
+  <form method="post" action="{% url 'destination_delete' destination.pk %}" class="d-inline">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form><br>
+  <a href="{% url 'destination_list' %}">Back</a>
+
+  
+</div>
+{% endblock %}

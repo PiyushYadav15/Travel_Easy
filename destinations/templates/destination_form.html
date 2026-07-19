@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+{% block content %}
+<h2>{{ form.instance.pk|yesno:"Update Destination,Add Destination" }}</h2>
+
+<a href="{% url 'destination_list' %}">Back</a>
+
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success">Save</button>
+</form>
+{% endblock %}

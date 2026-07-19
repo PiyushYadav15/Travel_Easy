@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+{% block content %}
+<h2>Deleted Activities</h2>
+
+
+{% for activity in activities %}
+<div class="card mb-3">
+  <div class="card-body">
+    <h5>{{ activity.name }}</h5>
+    <form method="post" action="{% url 'activity_restore' activity.pk %}">
+      {% csrf_token %}
+      <button class="btn btn-success btn-sm">Restore</button>
+    </form>
+  </div>
+</div>
+{% empty %}
+<p>No deleted activities found.</p>
+{% endfor %}
+<a href="{% url 'activity_list' %}" class="btn btn-secondary mt-3">Back to Active Activities</a>
+{% endblock %}

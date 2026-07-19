@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+{% block content %}
+<h2>{{ activity.name }}</h2>
+
+
+
+<img src="{{ activity.image.url }}" class="img-fluid mb-3" alt="{{ activity.name }}">
+<p>{{ activity.description }}</p>
+
+<a href="{% url 'activity_update' activity.pk %}" class="btn btn-warning">Edit</a>
+<a href="{% url 'activity_delete' activity.pk %}" class="btn btn-danger">Delete</a>
+<a href="{% url 'activity_list' %}" class="btn btn-secondary">Back</a>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+{% block content %}
+<h2>Deleted Destinations</h2>
+
+
+
+{% if deleted_destinations %}
+  <ul class="list-group">
+    {% for d in deleted_destinations %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ d.name }}
+        <form method="post" action="{% url 'destination_restore' d.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success btn-sm">Restore</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No deleted destinations found.</p>
+{% endif %}
+{% endblock %}

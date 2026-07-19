@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+{% block content %}
+<h2>All Activities</h2>
+
+<a href="{% url 'activity_create' %}" class="btn btn-success mt-3">Add Activity</a>
+<a href="{% url 'activity_history' %}" class="btn btn-secondary mt-3">View History</a>
+
+
+
+<a class="btn btn-primary mb-3" href="{% url 'activity_create' %}">Add New Activity</a>
+<div class="row">
+  {% for activity in activities %}
+  <div class="col-md-4 mb-4">
+    <div class="card">
+      <img src="{{ activity.image.url }}" class="card-img-top" alt="{{ activity.name }}">
+      <div class="card-body">
+        <h5 class="card-title">{{ activity.name }}</h5>
+        <p class="card-text">{{ activity.description|truncatechars:100 }}</p>
+        <a href="{% url 'activity_detail' activity.pk %}" class="btn btn-sm btn-info">View</a>
+        <a href="{% url 'activity_update' activity.pk %}" class="btn btn-sm btn-warning">Edit</a>
+        <a href="{% url 'activity_delete' activity.pk %}" class="btn btn-sm btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <p>No activities available.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}
