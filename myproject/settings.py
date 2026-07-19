@@ -120,6 +120,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+ALLOWED_HOSTS = [
+    "travel-easy-ix12.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
