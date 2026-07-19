@@ -1,13 +1,579 @@
+<style>
+
+/* Destination Form Styles */
+.form-container {
+    max-width: 750px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated Gradient Border */
+.form-container::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: conic-gradient(
+        from 0deg,
+        #667eea,
+        #764ba2,
+        #ff6b6b,
+        #ffd93d,
+        #6bcb77,
+        #667eea
+    );
+    border-radius: 32px;
+    z-index: -1;
+    animation: rotateBorder 8s linear infinite;
+    opacity: 0.8;
+}
+
+.form-container::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    z-index: -1;
+}
+
+/* Form Title */
+.form-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: slideInDown 0.8s ease-out;
+    position: relative;
+}
+
+.form-title::before {
+    content: '✏️';
+    margin-right: 0.5rem;
+    animation: bounce 2s ease-in-out infinite;
+    -webkit-text-fill-color: initial;
+}
+
+.form-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 4px;
+    animation: expandWidth 0.8s ease-out 0.3s both;
+}
+
+/* Form Styling */
+.destination-form {
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.destination-form p {
+    margin-bottom: 1.8rem;
+    position: relative;
+}
+
+/* Label Styling */
+.destination-form label {
+    display: block;
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+}
+
+.destination-form label::before {
+    content: '◆ ';
+    color: #667eea;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.destination-form p:hover label::before {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Input Fields */
+.destination-form input[type="text"],
+.destination-form input[type="number"],
+.destination-form input[type="url"],
+.destination-form input[type="email"],
+.destination-form input[type="password"],
+.destination-form select,
+.destination-form textarea {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 2px solid #e1e8ed;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    color: #2d3436;
+    outline: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.destination-form input[type="text"]:hover,
+.destination-form input[type="number"]:hover,
+.destination-form input[type="url"]:hover,
+.destination-form select:hover,
+.destination-form textarea:hover {
+    border-color: #a29bfe;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+.destination-form input[type="text"]:focus,
+.destination-form input[type="number"]:focus,
+.destination-form input[type="url"]:focus,
+.destination-form select:focus,
+.destination-form textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 4px 15px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Textarea Styling */
+.destination-form textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* File Input Styling */
+.destination-form input[type="file"] {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px dashed #e1e8ed;
+    border-radius: 15px;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.destination-form input[type="file"]:hover {
+    border-color: #667eea;
+    background: #f0f2ff;
+}
+
+.destination-form input[type="file"]::file-selector-button {
+    padding: 0.5rem 1.5rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-right: 1rem;
+}
+
+.destination-form input[type="file"]::file-selector-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Select Dropdown Styling */
+.destination-form select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.2rem;
+    padding-right: 3rem;
+}
+
+/* Error Messages */
+.destination-form .errorlist {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: 10px;
+    border-left: 3px solid #ff6b6b;
+    list-style: none;
+}
+
+.destination-form .errorlist li {
+    margin: 0.2rem 0;
+}
+
+.destination-form input.error,
+.destination-form textarea.error,
+.destination-form select.error {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+}
+
+/* Help Text */
+.destination-form .helptext {
+    display: block;
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 0.3rem;
+    padding-left: 0.5rem;
+    border-left: 2px solid #667eea;
+    padding-left: 0.8rem;
+}
+
+/* Button Group */
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+/* Button Styles */
+.btn {
+    padding: 0.8rem 2.5rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    min-width: 140px;
+    justify-content: center;
+}
+
+/* Save Button */
+.btn-save {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-save::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-save:hover::before {
+    left: 100%;
+}
+
+.btn-save:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 35px rgba(102, 126, 234, 0.6);
+    background: linear-gradient(135deg, #7c6cf0, #8b5cf6);
+}
+
+.btn-save:active {
+    transform: scale(0.95);
+}
+
+/* Back Button */
+.btn-back {
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    color: white;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.btn-back::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-back:hover::before {
+    left: 100%;
+}
+
+.btn-back:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 30px rgba(108, 92, 231, 0.5);
+    background: linear-gradient(135deg, #7c6cf0, #5a4bd1);
+}
+
+.btn-back:active {
+    transform: scale(0.95);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rotateBorder {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes expandWidth {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+    to {
+        width: 60px;
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2) rotate(10deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .form-container {
+        margin: 1.5rem 1rem;
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-container {
+        margin: 1rem 0.5rem;
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .form-title {
+        font-size: 2rem;
+    }
+    
+    .destination-form input[type="text"],
+    .destination-form input[type="number"],
+    .destination-form input[type="url"],
+    .destination-form select,
+    .destination-form textarea {
+        padding: 0.7rem 1rem;
+        font-size: 0.95rem;
+    }
+    
+    .btn {
+        padding: 0.7rem 1.8rem;
+        font-size: 0.9rem;
+        min-width: 120px;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 1rem;
+        border-radius: 15px;
+        margin: 0.5rem;
+    }
+    
+    .form-title {
+        font-size: 1.6rem;
+    }
+    
+    .form-title::before {
+        font-size: 1.2rem;
+    }
+    
+    .destination-form input[type="text"],
+    .destination-form input[type="number"],
+    .destination-form input[type="url"],
+    .destination-form select,
+    .destination-form textarea {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+        border-radius: 12px;
+    }
+    
+    .destination-form label {
+        font-size: 0.85rem;
+    }
+    
+    .btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.85rem;
+        min-width: 100px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .form-container {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .form-container::after {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .destination-form label {
+        color: #ddd;
+    }
+    
+    .destination-form input[type="text"],
+    .destination-form input[type="number"],
+    .destination-form input[type="url"],
+    .destination-form select,
+    .destination-form textarea {
+        background: rgba(50, 50, 60, 0.8);
+        color: #ddd;
+        border-color: #444;
+    }
+    
+    .destination-form input[type="text"]:focus,
+    .destination-form input[type="number"]:focus,
+    .destination-form input[type="url"]:focus,
+    .destination-form select:focus,
+    .destination-form textarea:focus {
+        border-color: #a29bfe;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+    }
+    
+    .destination-form input[type="file"] {
+        background: rgba(50, 50, 60, 0.8);
+        border-color: #444;
+    }
+    
+    .destination-form .helptext {
+        color: #888;
+    }
+    
+    .destination-form .errorlist {
+        background: rgba(255, 107, 107, 0.15);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .form-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .btn-group {
+        display: none;
+    }
+}
+
+/* Loading State for Save Button */
+.btn-save.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-save.loading::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+</style>
+
+
+
+
+
+
 {% extends 'main.html' %}
+
 {% block content %}
-<h2>{{ form.instance.pk|yesno:"Update Destination,Add Destination" }}</h2>
 
-<a href="{% url 'destination_list' %}">Back</a>
+<div class="form-container">
 
+    <h2 class="form-title">
+        {{ form.instance.pk|yesno:"Update Destination,Add Destination" }}
+    </h2>
 
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-success">Save</button>
-</form>
+    <form method="post" enctype="multipart/form-data" class="destination-form">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-save">
+                💾 Save
+            </button>
+
+            <a href="{% url 'destination_list' %}" class="btn btn-back">
+                ⬅ Back
+            </a>
+        </div>
+    </form>
+
+</div>
+
 {% endblock %}

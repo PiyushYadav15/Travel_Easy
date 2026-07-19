@@ -1,12 +1,743 @@
-{% extends 'main.html' %}
-{% block content %}
-<h2>Confirm Delete</h2>
-<p>Are you sure you want to delete "{{ object.name }}"?</p>
+<style>
+/* Delete Confirmation Page Styles */
+.delete-container {
+    max-width: 550px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+}
 
-<form method="post">
-  {% csrf_token %}
-  <button type="submit" class="btn btn-danger">Yes, Delete</button>
-  <a href="{% url 'activity_list' %}" class="btn btn-secondary">Cancel</a>
-</form>
+/* Animated Gradient Border */
+.delete-container::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: conic-gradient(
+        from 0deg,
+        #ff6b6b,
+        #ee5a24,
+        #ffd93d,
+        #ff6b6b,
+        #ee5a24,
+        #ff6b6b
+    );
+    border-radius: 32px;
+    z-index: -1;
+    animation: rotateBorder 6s linear infinite;
+    opacity: 0.8;
+}
+
+.delete-container::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    z-index: -1;
+}
+
+/* Floating Particles */
+.delete-container .particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+    animation: floatParticle 8s ease-in-out infinite;
+    z-index: 0;
+}
+
+.delete-container .particle:nth-child(1) {
+    width: 100px;
+    height: 100px;
+    background: #ff6b6b;
+    top: -30px;
+    right: -30px;
+    animation-delay: 0s;
+}
+
+.delete-container .particle:nth-child(2) {
+    width: 70px;
+    height: 70px;
+    background: #ee5a24;
+    bottom: -20px;
+    left: -20px;
+    animation-delay: 2s;
+}
+
+.delete-container .particle:nth-child(3) {
+    width: 50px;
+    height: 50px;
+    background: #ffd93d;
+    top: 50%;
+    left: -15px;
+    animation-delay: 4s;
+}
+
+.delete-container .particle:nth-child(4) {
+    width: 40px;
+    height: 40px;
+    background: #ff6b6b;
+    bottom: 30%;
+    right: -10px;
+    animation-delay: 3s;
+}
+
+/* Delete Title */
+.delete-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: slideInDown 0.8s ease-out;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.delete-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+    border-radius: 4px;
+    animation: expandWidth 0.8s ease-out 0.3s both;
+}
+
+.delete-title .icon {
+    display: inline-block;
+    animation: shake 2s ease-in-out infinite;
+    -webkit-text-fill-color: initial;
+}
+
+/* Delete Text */
+.delete-text {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+    position: relative;
+    z-index: 1;
+    padding: 0 0.5rem;
+}
+
+.delete-text strong {
+    color: #d63031;
+    font-weight: 700;
+    font-size: 1.4rem;
+    display: inline-block;
+    position: relative;
+    padding: 0.2rem 0.8rem;
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    word-break: break-word;
+}
+
+.delete-text strong:hover {
+    background: rgba(255, 107, 107, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.2);
+}
+
+.delete-text strong::before {
+    content: '⚠️ ';
+    font-size: 1.2rem;
+}
+
+.delete-text .activity-icon {
+    display: inline-block;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Warning Animation */
+.delete-text .warning-line {
+    display: inline-block;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Button Group */
+.delete-btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+    position: relative;
+    z-index: 1;
+}
+
+/* Delete Button */
+.delete-btn {
+    padding: 0.8rem 2.5rem;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4);
+    position: relative;
+    overflow: hidden;
+    min-width: 160px;
+    justify-content: center;
+}
+
+.delete-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.delete-btn:hover::before {
+    left: 100%;
+}
+
+.delete-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 35px rgba(255, 107, 107, 0.6);
+    background: linear-gradient(135deg, #ff5252, #d63031);
+}
+
+.delete-btn:active {
+    transform: scale(0.95);
+}
+
+.delete-btn .btn-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.delete-btn:hover .btn-icon {
+    transform: rotate(-15deg) scale(1.2);
+}
+
+/* Cancel Button */
+.cancel-btn {
+    padding: 0.8rem 2.5rem;
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+    position: relative;
+    overflow: hidden;
+    min-width: 160px;
+    justify-content: center;
+}
+
+.cancel-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.cancel-btn:hover::before {
+    left: 100%;
+}
+
+.cancel-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(108, 92, 231, 0.5);
+    background: linear-gradient(135deg, #7c6cf0, #5a4bd1);
+}
+
+.cancel-btn:active {
+    transform: scale(0.95);
+}
+
+.cancel-btn .btn-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.cancel-btn:hover .btn-icon {
+    transform: rotate(90deg) scale(1.2);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rotateBorder {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes expandWidth {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+    to {
+        width: 60px;
+        opacity: 1;
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    10% {
+        transform: rotate(-10deg);
+    }
+    20% {
+        transform: rotate(10deg);
+    }
+    30% {
+        transform: rotate(-10deg);
+    }
+    40% {
+        transform: rotate(10deg);
+    }
+    50% {
+        transform: rotate(-5deg);
+    }
+    60% {
+        transform: rotate(5deg);
+    }
+    70% {
+        transform: rotate(-3deg);
+    }
+    80% {
+        transform: rotate(3deg);
+    }
+    90% {
+        transform: rotate(-1deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes floatParticle {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    25% {
+        transform: translate(40px, -30px) scale(1.2);
+    }
+    50% {
+        transform: translate(-30px, 40px) scale(0.9);
+    }
+    75% {
+        transform: translate(30px, -40px) scale(1.1);
+    }
+}
+
+/* Delete Button Glow Effect */
+.delete-btn {
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 40px rgba(255, 107, 107, 0.7);
+    }
+}
+
+/* Container Hover Effect */
+.delete-container:hover {
+    box-shadow: 
+        0 25px 70px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    transform: translateY(-2px);
+    transition: all 0.4s ease;
+}
+
+/* Warning Icon Animation */
+.delete-title .warning-icon {
+    display: inline-block;
+    animation: warningPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes warningPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .delete-container {
+        margin: 1.5rem 1rem;
+        padding: 1.8rem;
+        border-radius: 20px;
+    }
+    
+    .delete-title {
+        font-size: 2.2rem;
+    }
+    
+    .delete-text {
+        font-size: 1rem;
+    }
+    
+    .delete-text strong {
+        font-size: 1.2rem;
+        padding: 0.1rem 0.6rem;
+    }
+    
+    .delete-btn,
+    .cancel-btn {
+        padding: 0.7rem 1.8rem;
+        font-size: 0.9rem;
+        min-width: 140px;
+    }
+    
+    .delete-btn-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .delete-container {
+        margin: 1rem 0.5rem;
+        padding: 1.2rem;
+        border-radius: 15px;
+    }
+    
+    .delete-container::before {
+        border-radius: 17px;
+    }
+    
+    .delete-container::after {
+        border-radius: 13px;
+    }
+    
+    .delete-title {
+        font-size: 1.8rem;
+    }
+    
+    .delete-title::after {
+        width: 40px;
+    }
+    
+    .delete-text {
+        font-size: 0.95rem;
+        padding: 0;
+    }
+    
+    .delete-text strong {
+        font-size: 1.1rem;
+        padding: 0.1rem 0.5rem;
+    }
+    
+    .delete-btn,
+    .cancel-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.85rem;
+        min-width: 120px;
+    }
+    
+    .delete-btn-group {
+        gap: 0.6rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .delete-container {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .delete-container::after {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .delete-text {
+        color: #bbb;
+    }
+    
+    .delete-text strong {
+        background: rgba(255, 107, 107, 0.2);
+        color: #ff6b6b;
+    }
+    
+    .delete-text strong:hover {
+        background: rgba(255, 107, 107, 0.3);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .delete-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .delete-btn-group {
+        display: none;
+    }
+}
+
+/* Additional Effects */
+
+/* Confetti Effect for Delete (Optional - for dramatic effect) */
+.confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall 3s ease-out forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        opacity: 1;
+        transform: translateY(-100px) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(720deg);
+    }
+}
+
+/* Success/Error Toast Notification */
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.5s ease-out;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.toast-notification.success {
+    background: linear-gradient(135deg, #6bcb77, #2d9b4e);
+}
+
+.toast-notification.error {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+}
+
+.toast-notification.hide {
+    animation: slideOutRight 0.5s ease-out forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Activity Type Indicator */
+.delete-text .activity-type {
+    display: inline-block;
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+/* Danger Zone Badge */
+.danger-zone {
+    display: inline-block;
+    padding: 0.2rem 1rem;
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    border-radius: 20px;
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Hover Scale for Text */
+.delete-text strong {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.delete-text strong:hover {
+    transform: scale(1.08) rotate(-1deg);
+}
+
+/* Focus States for Accessibility */
+.delete-btn:focus,
+.cancel-btn:focus {
+    outline: 3px solid rgba(102, 126, 234, 0.5);
+    outline-offset: 3px;
+}
+
+/* Loading State for Delete Button */
+.delete-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.delete-btn.loading::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+</style>
+
+
+
+
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div class="delete-container">
+
+    <h2 class="delete-title">🗑️ Confirm Delete</h2>
+
+    <p class="delete-text">
+        Are you sure you want to delete
+        <strong>"{{ object.name }}"</strong>?
+    </p>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <div class="delete-btn-group">
+
+            <button type="submit" class="delete-btn">
+                🗑️ Yes, Delete
+            </button>
+
+            <a href="{% url 'activity_list' %}" class="cancel-btn">
+                ❌ Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
 
 {% endblock %}

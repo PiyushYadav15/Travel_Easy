@@ -1,14 +1,681 @@
+<style>
+/* Activity Detail Page Styles */
+.activity-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated Gradient Border */
+.activity-container::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: conic-gradient(
+        from 0deg,
+        #ff6b6b,
+        #ffd93d,
+        #6bcb77,
+        #4d96ff,
+        #9b59b6,
+        #ff6b6b
+    );
+    border-radius: 32px;
+    z-index: -1;
+    animation: rotateBorder 6s linear infinite;
+    opacity: 0.7;
+}
+
+.activity-container::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    z-index: -1;
+}
+
+/* Activity Title */
+.activity-title {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: slideInLeft 0.8s ease-out;
+    position: relative;
+    letter-spacing: -1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.activity-title::after {
+    content: '⭐';
+    font-size: 2rem;
+    animation: sparkle 2s ease-in-out infinite;
+    -webkit-text-fill-color: initial;
+}
+
+/* Activity Image */
+.activity-image {
+    width: 100%;
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    margin-bottom: 2rem;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.8s ease-out 0.2s both;
+    position: relative;
+}
+
+.activity-image:hover {
+    transform: scale(1.02) rotate(1deg);
+    box-shadow: 
+        0 15px 50px rgba(0, 0, 0, 0.25),
+        0 0 0 2px rgba(255, 107, 107, 0.3) inset;
+    filter: brightness(1.05) saturate(1.1);
+}
+
+/* Image Overlay Effect */
+.activity-image-wrapper {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.activity-image-wrapper::after {
+    content: '🎯';
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0.8rem;
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    animation: float 3s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.activity-image-wrapper:hover::after {
+    opacity: 1;
+}
+
+/* Activity Info Section */
+.activity-info {
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(255, 217, 61, 0.05), rgba(107, 203, 119, 0.05));
+    border-radius: 20px;
+    margin-bottom: 2.5rem;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.activity-info h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d3436;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.activity-info h3::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+    border-radius: 3px;
+    animation: expandWidth 0.8s ease-out 0.6s both;
+}
+
+.activity-info p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
+    padding: 0.5rem 0;
+    animation: fadeInUp 0.8s ease-out 0.5s both;
+}
+
+/* Activity Info Icons */
+.activity-info .meta-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.activity-info .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.activity-info .meta-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.activity-info .meta-item .icon {
+    font-size: 1.5rem;
+}
+
+.activity-info .meta-item .label {
+    font-weight: 600;
+    color: #2d3436;
+}
+
+.activity-info .meta-item .value {
+    color: #636e72;
+}
+
+/* Activity Buttons */
+.activity-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+/* Button Styles */
+.btn {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    min-width: 130px;
+    justify-content: center;
+}
+
+/* Edit Button */
+.btn-edit {
+    background: linear-gradient(135deg, #ffd93d, #f7971e);
+    color: #333;
+    box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4);
+}
+
+.btn-edit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-edit:hover::before {
+    left: 100%;
+}
+
+.btn-edit:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(255, 217, 61, 0.6);
+    background: linear-gradient(135deg, #ffe44d, #f7971e);
+}
+
+.btn-edit:active {
+    transform: scale(0.95);
+}
+
+/* Delete Button */
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.btn-delete::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-delete:hover::before {
+    left: 100%;
+}
+
+.btn-delete:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6);
+    background: linear-gradient(135deg, #ff5252, #d63031);
+}
+
+.btn-delete:active {
+    transform: scale(0.95);
+}
+
+/* Back Button */
+.btn-back {
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    color: white;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.btn-back::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-back:hover::before {
+    left: 100%;
+}
+
+.btn-back:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(108, 92, 231, 0.5);
+    background: linear-gradient(135deg, #7c6cf0, #5a4bd1);
+}
+
+.btn-back:active {
+    transform: scale(0.95);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes rotateBorder {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.2) rotate(20deg);
+    }
+    75% {
+        transform: scale(1.2) rotate(-20deg);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes expandWidth {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+    to {
+        width: 50px;
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .activity-container {
+        margin: 1.5rem 1rem;
+        padding: 1.8rem;
+    }
+    
+    .activity-title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .activity-container {
+        margin: 1rem 0.5rem;
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .activity-title {
+        font-size: 2rem;
+    }
+    
+    .activity-title::after {
+        font-size: 1.5rem;
+    }
+    
+    .activity-image {
+        max-height: 300px;
+    }
+    
+    .activity-info {
+        padding: 1.2rem;
+    }
+    
+    .activity-info h3 {
+        font-size: 1.5rem;
+    }
+    
+    .activity-info p {
+        font-size: 1rem;
+    }
+    
+    .activity-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+    
+    .btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+        min-width: 100px;
+    }
+    
+    .activity-info .meta-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .activity-container {
+        padding: 1rem;
+        border-radius: 15px;
+        margin: 0.5rem;
+    }
+    
+    .activity-title {
+        font-size: 1.6rem;
+    }
+    
+    .activity-title::after {
+        font-size: 1.2rem;
+    }
+    
+    .activity-image {
+        max-height: 220px;
+        border-radius: 15px;
+    }
+    
+    .activity-info {
+        padding: 1rem;
+    }
+    
+    .activity-info h3 {
+        font-size: 1.3rem;
+    }
+    
+    .activity-info p {
+        font-size: 0.95rem;
+    }
+    
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+        min-width: 80px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .activity-container {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .activity-container::after {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .activity-info {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 217, 61, 0.1), rgba(107, 203, 119, 0.1));
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .activity-info h3 {
+        color: #eee;
+    }
+    
+    .activity-info p {
+        color: #bbb;
+    }
+    
+    .activity-info .meta-item {
+        background: rgba(50, 50, 60, 0.8);
+        color: #ddd;
+    }
+    
+    .activity-info .meta-item .label {
+        color: #eee;
+    }
+    
+    .activity-info .meta-item .value {
+        color: #aaa;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .activity-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .activity-buttons {
+        display: none;
+    }
+    
+    .activity-image {
+        max-height: 300px;
+    }
+}
+
+/* Loading Skeleton (Optional) */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Additional Effects */
+
+/* Activity Tags */
+.activity-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.activity-tag {
+    padding: 0.3rem 0.8rem;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 217, 61, 0.1));
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #555;
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    transition: all 0.3s ease;
+}
+
+.activity-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.15);
+}
+
+/* Share Button (Optional) */
+.btn-share {
+    background: linear-gradient(135deg, #4d96ff, #3b7ddb);
+    color: white;
+    box-shadow: 0 4px 15px rgba(77, 150, 255, 0.3);
+}
+
+.btn-share:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(77, 150, 255, 0.5);
+    background: linear-gradient(135deg, #5ca0ff, #4d96ff);
+}
+
+/* Activity Stats */
+.activity-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-item .number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2d3436;
+}
+
+.stat-item .label {
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 0.2rem;
+}
+
+
+
+</style>
+
+
+
+
+
+
 {% extends 'main.html' %}
+
 {% block content %}
-<h2>{{ activity.name }}</h2>
 
+<div class="activity-container">
 
+    <h2 class="activity-title">🎯 {{ activity.name }}</h2>
 
-<img src="{{ activity.image.url }}" class="img-fluid mb-3" alt="{{ activity.name }}">
-<p>{{ activity.description }}</p>
+    <img src="{{ activity.image.url }}"
+         alt="{{ activity.name }}"
+         class="activity-image">
 
-<a href="{% url 'activity_update' activity.pk %}" class="btn btn-warning">Edit</a>
-<a href="{% url 'activity_delete' activity.pk %}" class="btn btn-danger">Delete</a>
-<a href="{% url 'activity_list' %}" class="btn btn-secondary">Back</a>
+    <div class="activity-info">
+
+        <h3>📖 Description</h3>
+
+        <p>{{ activity.description }}</p>
+
+    </div>
+
+    <div class="activity-buttons">
+
+        <a href="{% url 'activity_update' activity.pk %}" class="btn btn-edit">
+            ✏️ Edit
+        </a>
+
+        <a href="{% url 'activity_delete' activity.pk %}" class="btn btn-delete">
+            🗑️ Delete
+        </a>
+
+        <a href="{% url 'activity_list' %}" class="btn btn-back">
+            ⬅ Back
+        </a>
+
+    </div>
+
+</div>
 
 {% endblock %}

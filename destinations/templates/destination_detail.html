@@ -1,21 +1,566 @@
+<style>
+/* Destination Detail Page Styles */
+.destination-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated Gradient Border */
+.destination-container::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: conic-gradient(
+        from 0deg,
+        #ff6b6b,
+        #ffd93d,
+        #6bcb77,
+        #4d96ff,
+        #9b59b6,
+        #ff6b6b
+    );
+    border-radius: 32px;
+    z-index: -1;
+    animation: rotateBorder 6s linear infinite;
+    opacity: 0.7;
+}
+
+.destination-container::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    z-index: -1;
+}
+
+/* Header Animation */
+.destination-title {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    animation: slideInLeft 0.8s ease-out;
+    letter-spacing: -1px;
+}
+
+.destination-title::after {
+    content: '✨';
+    font-size: 2rem;
+    margin-left: 0.5rem;
+    animation: sparkle 2s ease-in-out infinite;
+    -webkit-text-fill-color: initial;
+}
+
+/* Image Container */
+.destination-image {
+    width: 100%;
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    margin-bottom: 2rem;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.8s ease-out 0.2s both;
+    position: relative;
+}
+
+.destination-image:hover {
+    transform: scale(1.02) rotate(1deg);
+    box-shadow: 
+        0 15px 50px rgba(0, 0, 0, 0.25),
+        0 0 0 2px rgba(102, 126, 234, 0.3) inset;
+    filter: brightness(1.05) saturate(1.1);
+}
+
+/* Image Overlay Effect */
+.destination-image-wrapper {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.destination-image-wrapper::after {
+    content: '📸';
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2rem;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0.8rem;
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    animation: float 3s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.destination-image-wrapper:hover::after {
+    opacity: 1;
+}
+
+/* Info Section */
+.destination-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+    border-radius: 20px;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+    position: relative;
+}
+
+.destination-info p {
+    margin: 0;
+    padding: 0.8rem 1rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.destination-info p:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
+}
+
+.destination-info p:last-child {
+    grid-column: 1 / -1;
+}
+
+.destination-info strong {
+    color: #667eea;
+    font-weight: 700;
+    min-width: 90px;
+}
+
+/* Rating Stars Animation */
+.destination-info p:nth-child(3) {
+    background: linear-gradient(135deg, #fff5e6, #fff0d0);
+    border: 1px solid #ffd93d;
+}
+
+.destination-info p:nth-child(3) strong {
+    color: #f39c12;
+}
+
+/* Description Styling */
+.destination-info p:last-child {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 1px solid #dee2e6;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.destination-info p:last-child strong {
+    margin-bottom: 0.3rem;
+}
+
+.destination-info p:last-child {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #495057;
+}
+
+/* Button Group */
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+/* Button Styles */
+.btn {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    min-width: 130px;
+    justify-content: center;
+}
+
+/* Edit Button */
+.btn-warning {
+    background: linear-gradient(135deg, #ffd93d, #f7971e);
+    color: #333;
+    box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4);
+}
+
+.btn-warning::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-warning:hover::before {
+    left: 100%;
+}
+
+.btn-warning:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(255, 217, 61, 0.6);
+    background: linear-gradient(135deg, #ffe44d, #f7971e);
+}
+
+.btn-warning:active {
+    transform: scale(0.95);
+}
+
+/* Delete Button */
+.btn-danger {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.btn-danger::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-danger:hover::before {
+    left: 100%;
+}
+
+.btn-danger:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6);
+    background: linear-gradient(135deg, #ff5252, #d63031);
+}
+
+.btn-danger:active {
+    transform: scale(0.95);
+}
+
+/* Back Button */
+.btn-back {
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    color: white;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.btn-back::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-back:hover::before {
+    left: 100%;
+}
+
+.btn-back:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(108, 92, 231, 0.5);
+    background: linear-gradient(135deg, #7c6cf0, #5a4bd1);
+}
+
+.btn-back:active {
+    transform: scale(0.95);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes rotateBorder {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.2) rotate(20deg);
+    }
+    75% {
+        transform: scale(1.2) rotate(-20deg);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Stagger animations for info items */
+.destination-info p:nth-child(1) { animation-delay: 0.1s; }
+.destination-info p:nth-child(2) { animation-delay: 0.2s; }
+.destination-info p:nth-child(3) { animation-delay: 0.3s; }
+.destination-info p:nth-child(4) { animation-delay: 0.4s; }
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .destination-container {
+        margin: 1.5rem 1rem;
+        padding: 1.5rem;
+    }
+    
+    .destination-title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .destination-container {
+        margin: 1rem 0.5rem;
+        padding: 1.2rem;
+        border-radius: 20px;
+    }
+    
+    .destination-title {
+        font-size: 2rem;
+    }
+    
+    .destination-info {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+        padding: 1rem;
+    }
+    
+    .destination-info p {
+        font-size: 0.95rem;
+        padding: 0.6rem 0.8rem;
+    }
+    
+    .destination-image {
+        max-height: 300px;
+    }
+    
+    .btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+        min-width: 100px;
+    }
+    
+    .btn-group {
+        gap: 0.8rem;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .destination-title::after {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .destination-container {
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    .destination-title {
+        font-size: 1.8rem;
+    }
+    
+    .destination-image {
+        max-height: 220px;
+        border-radius: 15px;
+    }
+    
+    .destination-info {
+        padding: 0.8rem;
+    }
+    
+    .destination-info p {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.7rem;
+    }
+    
+    .btn {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.85rem;
+        min-width: 80px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .destination-container {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .destination-container::after {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .destination-info {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    }
+    
+    .destination-info p {
+        background: rgba(50, 50, 60, 0.8);
+        color: #ddd;
+        border-color: #444;
+    }
+    
+    .destination-info p:last-child {
+        background: rgba(50, 50, 60, 0.8);
+        color: #ddd;
+    }
+    
+    .destination-info p strong {
+        color: #a29bfe;
+    }
+    
+    .destination-title {
+        background: linear-gradient(135deg, #a29bfe, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .destination-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .btn-group {
+        display: none;
+    }
+    
+    .destination-image {
+        max-height: 300px;
+    }
+}
+
+</style>
+
 {% extends 'main.html' %}
+
 {% block content %}
 
-<div class="container">
-  <h2>{{ destination.name }}</h2>
-  <img src="{{ destination.image.url }}" class="img-fluid mb-3" alt="{{ destination.name }}">
-  <p><strong>Location:</strong> {{ destination.location }}</p>
-  <p><strong>Type:</strong> {{ destination.type }}</p>
-  <p><strong>Rating:</strong> {{ destination.rating }}</p>
-  <p>{{ destination.description }}</p>
+<div class="destination-container">
 
-  <a href="{% url 'destination_update' destination.pk %}" class="btn btn-warning">Edit</a>
-  <form method="post" action="{% url 'destination_delete' destination.pk %}" class="d-inline">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Delete</button>
-  </form><br>
-  <a href="{% url 'destination_list' %}">Back</a>
+    <h2 class="destination-title">{{ destination.name }}</h2>
 
-  
+    <img src="{{ destination.image.url }}"
+         alt="{{ destination.name }}"
+         class="destination-image">
+
+    <div class="destination-info">
+        <p><strong>📍 Location:</strong> {{ destination.location }}</p>
+        <p><strong>🏞️ Type:</strong> {{ destination.type }}</p>
+        <p><strong>⭐ Rating:</strong> {{ destination.rating }}/5</p>
+
+        <p>
+            <strong>📝 Description:</strong><br>
+            {{ destination.description }}
+        </p>
+    </div>
+
+    <div class="btn-group">
+        <a href="{% url 'destination_update' destination.pk %}" class="btn btn-warning">
+            ✏️ Edit
+        </a>
+
+        <form method="post" action="{% url 'destination_delete' destination.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">
+                🗑️ Delete
+            </button>
+        </form>
+
+        <a href="{% url 'destination_list' %}" class="btn btn-back">
+            ⬅ Back
+        </a>
+    </div>
+
 </div>
+
 {% endblock %}

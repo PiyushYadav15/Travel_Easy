@@ -1,20 +1,749 @@
+<style>
+/* Deleted Activities History Styles */
+.deleted-activities-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated Gradient Border */
+.deleted-activities-container::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: conic-gradient(
+        from 0deg,
+        #ff6b6b,
+        #ffd93d,
+        #6bcb77,
+        #4d96ff,
+        #9b59b6,
+        #ff6b6b
+    );
+    border-radius: 32px;
+    z-index: -1;
+    animation: rotateBorder 8s linear infinite;
+    opacity: 0.7;
+}
+
+.deleted-activities-container::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    z-index: -1;
+}
+
+/* Title */
+.deleted-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: slideInDown 0.8s ease-out;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.deleted-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+    border-radius: 4px;
+    animation: expandWidth 0.8s ease-out 0.3s both;
+}
+
+.deleted-title .emoji {
+    animation: shake 2s ease-in-out infinite;
+    -webkit-text-fill-color: initial;
+}
+
+/* Activity History Grid */
+.activity-history {
+    display: grid;
+    gap: 1rem;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+/* History Cards */
+.history-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1.8rem;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 4px solid #ff6b6b;
+    position: relative;
+    overflow: hidden;
+    animation: slideInRight 0.6s ease-out both;
+}
+
+/* Card Stagger Animation */
+.history-card:nth-child(1) { animation-delay: 0.1s; }
+.history-card:nth-child(2) { animation-delay: 0.15s; }
+.history-card:nth-child(3) { animation-delay: 0.2s; }
+.history-card:nth-child(4) { animation-delay: 0.25s; }
+.history-card:nth-child(5) { animation-delay: 0.3s; }
+.history-card:nth-child(6) { animation-delay: 0.35s; }
+.history-card:nth-child(7) { animation-delay: 0.4s; }
+.history-card:nth-child(8) { animation-delay: 0.45s; }
+.history-card:nth-child(9) { animation-delay: 0.5s; }
+.history-card:nth-child(10) { animation-delay: 0.55s; }
+
+/* Card Background Pattern */
+.history-card::before {
+    content: '🗑️';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    font-size: 5rem;
+    opacity: 0.05;
+    transform: rotate(-15deg);
+    transition: all 0.4s ease;
+}
+
+.history-card:hover::before {
+    transform: rotate(0deg) scale(1.2);
+    opacity: 0.08;
+}
+
+/* Card Hover Effects */
+.history-card:hover {
+    transform: translateX(8px) scale(1.01);
+    box-shadow: 
+        0 8px 30px rgba(255, 107, 107, 0.15),
+        0 2px 10px rgba(0, 0, 0, 0.06);
+    border-left-width: 6px;
+}
+
+.history-card:active {
+    transform: scale(0.98);
+}
+
+/* History Info */
+.history-info {
+    flex: 1;
+}
+
+.history-info h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d3436;
+    margin: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.history-info h3::before {
+    content: '🎯';
+    font-size: 1.3rem;
+}
+
+.history-card:hover .history-info h3 {
+    color: #ff6b6b;
+    transform: translateX(5px);
+}
+
+/* Activity Meta Info (Optional) */
+.history-info .meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.history-info .meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.history-info .meta .tag {
+    padding: 0.1rem 0.6rem;
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: 12px;
+    color: #ff6b6b;
+    font-weight: 600;
+}
+
+/* Deletion Date Badge (Optional) */
+.history-info .deleted-date {
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 0.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* Restore Button */
+.restore-btn {
+    padding: 0.6rem 1.5rem;
+    background: linear-gradient(135deg, #6bcb77, #2d9b4e);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(107, 203, 119, 0.3);
+    position: relative;
+    overflow: hidden;
+    min-width: 130px;
+    justify-content: center;
+}
+
+.restore-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.restore-btn:hover::before {
+    left: 100%;
+}
+
+.restore-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(107, 203, 119, 0.5);
+    background: linear-gradient(135deg, #5cb85c, #2d9b4e);
+}
+
+.restore-btn:active {
+    transform: scale(0.95);
+}
+
+/* Restore Button Success Animation */
+.restore-btn.restored {
+    background: linear-gradient(135deg, #ffd93d, #f7971e);
+    pointer-events: none;
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Empty State */
+.empty-history {
+    text-align: center;
+    padding: 4rem 2rem;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.empty-history h3 {
+    font-size: 1.8rem;
+    color: #999;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.empty-history h3::before {
+    content: '📭';
+    font-size: 5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.empty-history p {
+    color: #bbb;
+    margin-top: 0.5rem;
+}
+
+/* Back Section */
+.back-section {
+    text-align: center;
+    margin-top: 2.5rem;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 2.5rem;
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.back-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.back-btn:hover::before {
+    left: 100%;
+}
+
+.back-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(108, 92, 231, 0.5);
+    background: linear-gradient(135deg, #7c6cf0, #5a4bd1);
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes rotateBorder {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes expandWidth {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+    to {
+        width: 80px;
+        opacity: 1;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-10px) scale(1.05);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-10deg);
+    }
+    75% {
+        transform: rotate(10deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .deleted-activities-container {
+        margin: 1.5rem 1rem;
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .deleted-activities-container {
+        margin: 1rem 0.5rem;
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .deleted-title {
+        font-size: 2rem;
+    }
+    
+    .history-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        padding: 1.2rem;
+        text-align: center;
+    }
+    
+    .history-info h3 {
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+    
+    .history-info .meta {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .restore-btn {
+        width: 100%;
+        padding: 0.7rem;
+        min-width: unset;
+    }
+    
+    .back-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.7rem 1.5rem;
+    }
+    
+    .history-card:hover {
+        transform: translateX(0) scale(1.02);
+    }
+}
+
+@media (max-width: 480px) {
+    .deleted-activities-container {
+        padding: 1rem;
+        border-radius: 15px;
+        margin: 0.5rem;
+    }
+    
+    .deleted-title {
+        font-size: 1.6rem;
+    }
+    
+    .deleted-title::after {
+        width: 50px;
+    }
+    
+    .history-card {
+        padding: 1rem;
+        border-radius: 14px;
+    }
+    
+    .history-info h3 {
+        font-size: 1rem;
+    }
+    
+    .history-info .meta {
+        font-size: 0.75rem;
+        gap: 0.5rem;
+    }
+    
+    .restore-btn {
+        font-size: 0.85rem;
+        padding: 0.6rem;
+    }
+    
+    .empty-history h3 {
+        font-size: 1.3rem;
+    }
+    
+    .empty-history h3::before {
+        font-size: 3.5rem;
+    }
+    
+    .back-btn {
+        font-size: 0.85rem;
+        padding: 0.6rem 1.2rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .deleted-activities-container {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .deleted-activities-container::after {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .history-card {
+        background: rgba(50, 50, 60, 0.8);
+        border-left-color: #ff6b6b;
+    }
+    
+    .history-info h3 {
+        color: #ddd;
+    }
+    
+    .history-card:hover .history-info h3 {
+        color: #ff6b6b;
+    }
+    
+    .history-info .meta {
+        color: #888;
+    }
+    
+    .history-info .meta .tag {
+        background: rgba(255, 107, 107, 0.2);
+        color: #ff6b6b;
+    }
+    
+    .empty-history h3 {
+        color: #888;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .deleted-activities-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .restore-btn {
+        display: none;
+    }
+    
+    .back-section {
+        display: none;
+    }
+}
+
+/* Additional Effects */
+
+/* Count Badge */
+.deleted-title .badge {
+    font-size: 1.2rem;
+    background: rgba(255, 107, 107, 0.15);
+    color: #ff6b6b;
+    padding: 0.2rem 0.8rem;
+    border-radius: 30px;
+    -webkit-text-fill-color: #ff6b6b;
+    margin-left: 0.5rem;
+    display: inline-block;
+}
+
+/* Search/Filter Bar (Optional) */
+.history-search {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.history-search input {
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    border: 2px solid #e1e8ed;
+    border-radius: 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    min-width: 200px;
+}
+
+.history-search input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.history-search .search-btn {
+    padding: 0.8rem 1.8rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.history-search .search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Toast Notification */
+.toast-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #6bcb77, #2d9b4e);
+    color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.5s ease-out;
+    z-index: 1000;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.toast-success.hide {
+    animation: slideOutRight 0.5s ease-out forwards;
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Bulk Actions (Optional) */
+.bulk-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+}
+
+.bulk-actions .btn-bulk {
+    padding: 0.5rem 1.5rem;
+    background: rgba(102, 126, 234, 0.1);
+    border: 2px solid #667eea;
+    border-radius: 25px;
+    color: #667eea;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.bulk-actions .btn-bulk:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+
+</style>
+
+
+
+
 {% extends 'main.html' %}
+
 {% block content %}
-<h2>Deleted Activities</h2>
 
+<div class="deleted-activities-container">
 
-{% for activity in activities %}
-<div class="card mb-3">
-  <div class="card-body">
-    <h5>{{ activity.name }}</h5>
-    <form method="post" action="{% url 'activity_restore' activity.pk %}">
-      {% csrf_token %}
-      <button class="btn btn-success btn-sm">Restore</button>
-    </form>
-  </div>
+    <h2 class="deleted-title">🗑️ Deleted Activities</h2>
+
+    {% if activities %}
+
+        <div class="activity-history">
+
+            {% for activity in activities %}
+
+            <div class="history-card">
+
+                <div class="history-info">
+                    <h3>{{ activity.name }}</h3>
+                </div>
+
+                <form method="post" action="{% url 'activity_restore' activity.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="restore-btn">
+                        ♻️ Restore
+                    </button>
+                </form>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-history">
+            <h3>📭 No deleted activities found.</h3>
+        </div>
+
+    {% endif %}
+
+    <div class="back-section">
+        <a href="{% url 'activity_list' %}" class="back-btn">
+            ⬅ Back to Active Activities
+        </a>
+    </div>
+
 </div>
-{% empty %}
-<p>No deleted activities found.</p>
-{% endfor %}
-<a href="{% url 'activity_list' %}" class="btn btn-secondary mt-3">Back to Active Activities</a>
+
 {% endblock %}

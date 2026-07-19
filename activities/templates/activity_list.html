@@ -1,30 +1,810 @@
+<style>
+/* Activity List Page Styles */
+.activity-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* Page Header */
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 217, 61, 0.1), rgba(107, 203, 119, 0.1));
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: slideInDown 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.activity-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 107, 107, 0.1), transparent 70%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.activity-header::after {
+    content: '';
+    position: absolute;
+    bottom: -50%;
+    left: -20%;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(107, 203, 119, 0.1), transparent 70%);
+    border-radius: 50%;
+    animation: float 8s ease-in-out infinite reverse;
+}
+
+.activity-header h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #2d3436;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.activity-header h2::after {
+    content: '⚡';
+    font-size: 2rem;
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+/* Header Buttons */
+.header-buttons {
+    display: flex;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.8rem 1.8rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add Button */
+.btn-add {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-add::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-add:hover::before {
+    left: 100%;
+}
+
+.btn-add:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 35px rgba(102, 126, 234, 0.6);
+    background: linear-gradient(135deg, #7c6cf0, #8b5cf6);
+}
+
+.btn-add:active {
+    transform: scale(0.95);
+}
+
+/* History Button */
+.btn-history {
+    background: linear-gradient(135deg, #ffd93d, #f7971e);
+    color: #333;
+    box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4);
+}
+
+.btn-history::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-history:hover::before {
+    left: 100%;
+}
+
+.btn-history:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(255, 217, 61, 0.6);
+    background: linear-gradient(135deg, #ffe44d, #f7971e);
+}
+
+.btn-history:active {
+    transform: scale(0.95);
+}
+
+/* Activity Grid */
+.activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+/* Activity Cards */
+.activity-card {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    animation: scaleIn 0.6s ease-out both;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Card Stagger Animation */
+.activity-card:nth-child(1) { animation-delay: 0.1s; }
+.activity-card:nth-child(2) { animation-delay: 0.15s; }
+.activity-card:nth-child(3) { animation-delay: 0.2s; }
+.activity-card:nth-child(4) { animation-delay: 0.25s; }
+.activity-card:nth-child(5) { animation-delay: 0.3s; }
+.activity-card:nth-child(6) { animation-delay: 0.35s; }
+.activity-card:nth-child(7) { animation-delay: 0.4s; }
+.activity-card:nth-child(8) { animation-delay: 0.45s; }
+.activity-card:nth-child(9) { animation-delay: 0.5s; }
+.activity-card:nth-child(10) { animation-delay: 0.55s; }
+.activity-card:nth-child(11) { animation-delay: 0.6s; }
+.activity-card:nth-child(12) { animation-delay: 0.65s; }
+
+/* Card Hover Effects */
+.activity-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(255, 107, 107, 0.15);
+    border-color: rgba(255, 107, 107, 0.2);
+}
+
+.activity-card:active {
+    transform: scale(0.98);
+}
+
+/* Card Image */
+.activity-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.activity-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Image Overlay */
+.activity-card .image-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.activity-card .image-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.activity-card:hover .image-wrapper::after {
+    opacity: 1;
+}
+
+/* Activity Badge on Image */
+.activity-card .activity-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 0.4rem 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #2d3436;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.activity-card:hover .activity-badge {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Card Content */
+.activity-content {
+    padding: 1.5rem;
+}
+
+.activity-content h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2d3436;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.activity-card:hover .activity-content h3 {
+    color: #ff6b6b;
+}
+
+.activity-content p {
+    color: #636e72;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Card Buttons */
+.card-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.card-buttons .btn {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.85rem;
+    min-width: 70px;
+    justify-content: center;
+    flex: 1;
+}
+
+/* View Button */
+.btn-view {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-view::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-view:hover::before {
+    left: 100%;
+}
+
+.btn-view:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+    background: linear-gradient(135deg, #7c6cf0, #8b5cf6);
+}
+
+.btn-view:active {
+    transform: scale(0.95);
+}
+
+/* Edit Button */
+.btn-edit {
+    background: linear-gradient(135deg, #ffd93d, #f7971e);
+    color: #333;
+    box-shadow: 0 4px 15px rgba(255, 217, 61, 0.3);
+}
+
+.btn-edit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-edit:hover::before {
+    left: 100%;
+}
+
+.btn-edit:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(255, 217, 61, 0.5);
+}
+
+.btn-edit:active {
+    transform: scale(0.95);
+}
+
+/* Delete Button */
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.btn-delete::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-delete:hover::before {
+    left: 100%;
+}
+
+.btn-delete:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(255, 107, 107, 0.5);
+    background: linear-gradient(135deg, #ff5252, #d63031);
+}
+
+.btn-delete:active {
+    transform: scale(0.95);
+}
+
+/* Empty State */
+.empty-card {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.empty-card h3 {
+    font-size: 2rem;
+    color: #2d3436;
+    margin-bottom: 0.5rem;
+}
+
+.empty-card h3::before {
+    content: '🎯';
+    display: block;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.empty-card p {
+    color: #636e72;
+    font-size: 1.1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.2) rotate(-15deg);
+    }
+    75% {
+        transform: scale(1.2) rotate(15deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .activity-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .activity-page {
+        padding: 1rem;
+    }
+    
+    .activity-header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.2rem;
+        text-align: center;
+    }
+    
+    .activity-header h2 {
+        font-size: 2rem;
+        justify-content: center;
+    }
+    
+    .header-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .header-buttons .btn {
+        flex: 1;
+        justify-content: center;
+        min-width: 120px;
+    }
+    
+    .activity-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+    
+    .activity-card img {
+        height: 180px;
+    }
+    
+    .activity-content {
+        padding: 1.2rem;
+    }
+    
+    .activity-content h3 {
+        font-size: 1.2rem;
+    }
+    
+    .card-buttons .btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+        min-width: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .activity-page {
+        padding: 0.5rem;
+    }
+    
+    .activity-header {
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    .activity-header h2 {
+        font-size: 1.6rem;
+    }
+    
+    .activity-header h2::after {
+        font-size: 1.5rem;
+    }
+    
+    .header-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .header-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .activity-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .activity-card img {
+        height: 200px;
+    }
+    
+    .activity-content {
+        padding: 1rem;
+    }
+    
+    .activity-content h3 {
+        font-size: 1.1rem;
+    }
+    
+    .activity-content p {
+        font-size: 0.9rem;
+    }
+    
+    .card-buttons {
+        flex-direction: column;
+    }
+    
+    .card-buttons .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.6rem;
+    }
+    
+    .empty-card {
+        padding: 2rem 1rem;
+    }
+    
+    .empty-card h3 {
+        font-size: 1.5rem;
+    }
+    
+    .empty-card h3::before {
+        font-size: 3rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .activity-header {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(255, 217, 61, 0.15), rgba(107, 203, 119, 0.15));
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .activity-header h2 {
+        color: #eee;
+    }
+    
+    .activity-card {
+        background: rgba(30, 30, 40, 0.95);
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .activity-content h3 {
+        color: #eee;
+    }
+    
+    .activity-content p {
+        color: #aaa;
+    }
+    
+    .empty-card {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .empty-card h3 {
+        color: #eee;
+    }
+    
+    .empty-card p {
+        color: #aaa;
+    }
+    
+    .activity-card .activity-badge {
+        background: rgba(30, 30, 40, 0.95);
+        color: #eee;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .btn-add,
+    .btn-history,
+    .card-buttons {
+        display: none;
+    }
+    
+    .activity-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+
+/* Additional Effects */
+
+/* Quick Action Tooltip */
+.activity-card .quick-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.activity-card:hover .quick-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Loading Skeleton */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Activity Count Badge */
+.activity-header .count-badge {
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    color: #666;
+    margin-left: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+
+
+
+</style>
+
+
 {% extends 'main.html' %}
+
 {% block content %}
-<h2>All Activities</h2>
 
-<a href="{% url 'activity_create' %}" class="btn btn-success mt-3">Add Activity</a>
-<a href="{% url 'activity_history' %}" class="btn btn-secondary mt-3">View History</a>
+<div class="activity-page">
 
+    <div class="activity-header">
+        <h2>🎯 All Activities</h2>
 
+        <div class="header-buttons">
+            <a href="{% url 'activity_create' %}" class="btn btn-add">
+                ➕ Add Activity
+            </a>
 
-<a class="btn btn-primary mb-3" href="{% url 'activity_create' %}">Add New Activity</a>
-<div class="row">
-  {% for activity in activities %}
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <img src="{{ activity.image.url }}" class="card-img-top" alt="{{ activity.name }}">
-      <div class="card-body">
-        <h5 class="card-title">{{ activity.name }}</h5>
-        <p class="card-text">{{ activity.description|truncatechars:100 }}</p>
-        <a href="{% url 'activity_detail' activity.pk %}" class="btn btn-sm btn-info">View</a>
-        <a href="{% url 'activity_update' activity.pk %}" class="btn btn-sm btn-warning">Edit</a>
-        <a href="{% url 'activity_delete' activity.pk %}" class="btn btn-sm btn-danger">Delete</a>
-      </div>
+            <a href="{% url 'activity_history' %}" class="btn btn-history">
+                🗂️ View History
+            </a>
+        </div>
     </div>
-  </div>
-  {% empty %}
-  <p>No activities available.</p>
-  {% endfor %}
+
+    <div class="activity-grid">
+
+        {% for activity in activities %}
+
+        <div class="activity-card">
+
+            <img src="{{ activity.image.url }}" alt="{{ activity.name }}">
+
+            <div class="activity-content">
+
+                <h3>{{ activity.name }}</h3>
+
+                <p>{{ activity.description|truncatechars:100 }}</p>
+
+                <div class="card-buttons">
+
+                    <a href="{% url 'activity_detail' activity.pk %}" class="btn btn-view">
+                        👁️ View
+                    </a>
+
+                    <a href="{% url 'activity_update' activity.pk %}" class="btn btn-edit">
+                        ✏️ Edit
+                    </a>
+
+                    <a href="{% url 'activity_delete' activity.pk %}" class="btn btn-delete">
+                        🗑️ Delete
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-card">
+            <h3>📭 No activities available.</h3>
+            <p>Add your first activity to get started.</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
 </div>
 
 {% endblock %}

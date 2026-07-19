@@ -1,10 +1,823 @@
-{% extends 'main.html' %}
-{% block content %}
-<h2 class="mb-4">Update Profile</h2>
+<style>
+/* Update Profile Page Styles */
+.update-profile-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+    animation: gradientShift 10s ease-in-out infinite;
+}
 
-<form method="POST" class="card p-4 shadow-sm">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Save Changes</button>
-</form>
+/* Animated Background */
+.update-profile-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    animation: rotateBg 20s linear infinite;
+    z-index: 0;
+}
+
+/* Floating Shapes */
+.update-profile-container .shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    animation: floatShape 15s ease-in-out infinite;
+    z-index: 0;
+}
+
+.update-profile-container .shape:nth-child(1) {
+    width: 200px;
+    height: 200px;
+    top: 5%;
+    right: 3%;
+    animation-delay: 0s;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent);
+}
+
+.update-profile-container .shape:nth-child(2) {
+    width: 150px;
+    height: 150px;
+    bottom: 10%;
+    left: 3%;
+    animation-delay: 4s;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.06), transparent);
+}
+
+.update-profile-container .shape:nth-child(3) {
+    width: 100px;
+    height: 100px;
+    top: 60%;
+    right: 10%;
+    animation-delay: 8s;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05), transparent);
+}
+
+.update-profile-container .shape:nth-child(4) {
+    width: 120px;
+    height: 120px;
+    bottom: 30%;
+    left: 10%;
+    animation-delay: 2s;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.07), transparent);
+}
+
+.update-profile-container .shape:nth-child(5) {
+    width: 80px;
+    height: 80px;
+    top: 20%;
+    left: 15%;
+    animation-delay: 6s;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.04), transparent);
+}
+
+/* Update Profile Card */
+.update-profile-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 3rem 2.5rem;
+    border-radius: 30px;
+    box-shadow: 
+        0 30px 80px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    width: 100%;
+    max-width: 550px;
+    position: relative;
+    z-index: 1;
+    animation: slideUp 0.8s ease-out;
+    transform-origin: center;
+}
+
+/* Card Glow Effect */
+.update-profile-card::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, #667eea, #764ba2, #667eea);
+    border-radius: 32px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.update-profile-card:hover::before {
+    opacity: 1;
+}
+
+/* Profile Icon */
+.update-profile-icon {
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+    position: relative;
+}
+
+.update-profile-icon::after {
+    content: '';
+    position: absolute;
+    inset: -15px;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.1), transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Update Profile Title */
+.update-profile-card h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #2d3436;
+    margin-bottom: 0.3rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.update-profile-subtitle {
+    color: #999;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+/* Update Profile Form */
+.update-profile-form {
+    text-align: left;
+}
+
+.update-profile-form p {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+/* Form Labels */
+.update-profile-form label {
+    display: block;
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.update-profile-form label::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0;
+    background: linear-gradient(180deg, #667eea, #764ba2);
+    border-radius: 3px;
+    transition: height 0.3s ease;
+}
+
+.update-profile-form p:focus-within label::before {
+    height: 70%;
+}
+
+/* Form Inputs */
+.update-profile-form input[type="text"],
+.update-profile-form input[type="email"],
+.update-profile-form input[type="number"],
+.update-profile-form input[type="tel"],
+.update-profile-form input[type="url"],
+.update-profile-form input[type="date"],
+.update-profile-form select,
+.update-profile-form textarea {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 2px solid #e1e8ed;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    color: #2d3436;
+    outline: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.update-profile-form input[type="text"]:hover,
+.update-profile-form input[type="email"]:hover,
+.update-profile-form select:hover,
+.update-profile-form textarea:hover {
+    border-color: #a29bfe;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+.update-profile-form input[type="text"]:focus,
+.update-profile-form input[type="email"]:focus,
+.update-profile-form select:focus,
+.update-profile-form textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 4px 15px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Input Icons */
+.update-profile-form input[type="text"] {
+    padding-left: 2.8rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'%3E%3C/path%3E%3Ccircle cx='12' cy='7' r='4'%3E%3C/circle%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 1rem center;
+    background-size: 1.2rem;
+}
+
+.update-profile-form input[type="email"] {
+    padding-left: 2.8rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z'%3E%3C/path%3E%3Cpolyline points='22,6 12,13 2,6'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 1rem center;
+    background-size: 1.2rem;
+}
+
+/* Select Styling */
+.update-profile-form select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.2rem;
+    padding-right: 3rem;
+}
+
+/* Textarea Styling */
+.update-profile-form textarea {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* File Input Styling */
+.update-profile-form input[type="file"] {
+    width: 100%;
+    padding: 1rem;
+    border: 2px dashed #e1e8ed;
+    border-radius: 15px;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.update-profile-form input[type="file"]:hover {
+    border-color: #667eea;
+    background: #f0f2ff;
+}
+
+.update-profile-form input[type="file"]::file-selector-button {
+    padding: 0.6rem 1.8rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-right: 1rem;
+}
+
+.update-profile-form input[type="file"]::file-selector-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Error Messages */
+.update-profile-form .errorlist {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: 10px;
+    border-left: 3px solid #ff6b6b;
+    list-style: none;
+}
+
+.update-profile-form .errorlist li {
+    margin: 0.2rem 0;
+}
+
+.update-profile-form input.error,
+.update-profile-form textarea.error,
+.update-profile-form select.error {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+}
+
+/* Help Text */
+.update-profile-form .helptext {
+    display: block;
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 0.3rem;
+    padding-left: 0.8rem;
+    border-left: 2px solid #667eea;
+    line-height: 1.4;
+}
+
+/* Update Profile Button */
+.update-profile-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    letter-spacing: 0.5px;
+}
+
+.update-profile-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.update-profile-btn:hover::before {
+    left: 100%;
+}
+
+.update-profile-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 35px rgba(102, 126, 234, 0.6);
+    background: linear-gradient(135deg, #7c6cf0, #8b5cf6);
+}
+
+.update-profile-btn:active {
+    transform: scale(0.95);
+}
+
+/* Back to Profile Link */
+.back-profile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    color: #999;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.back-profile-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+}
+
+.back-profile-link:hover::after {
+    width: 100%;
+}
+
+.back-profile-link:hover {
+    color: #667eea;
+    transform: translateX(-5px);
+}
+
+/* Animations */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes floatShape {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    25% {
+        transform: translate(40px, -30px) scale(1.1);
+    }
+    50% {
+        transform: translate(-30px, 40px) scale(0.9);
+    }
+    75% {
+        transform: translate(30px, -40px) scale(1.05);
+    }
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    33% {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    66% {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+}
+
+@keyframes rotateBg {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.6;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .update-profile-container {
+        padding: 1rem;
+    }
+    
+    .update-profile-card {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .update-profile-card h2 {
+        font-size: 2rem;
+    }
+    
+    .update-profile-icon {
+        font-size: 3rem;
+    }
+    
+    .update-profile-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .update-profile-form input[type="text"],
+    .update-profile-form input[type="email"],
+    .update-profile-form select,
+    .update-profile-form textarea {
+        padding: 0.8rem 1rem;
+        padding-left: 2.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .update-profile-btn {
+        padding: 0.9rem;
+        font-size: 1rem;
+    }
+    
+    .update-profile-container .shape {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .update-profile-container {
+        padding: 0.5rem;
+    }
+    
+    .update-profile-card {
+        padding: 1.5rem 1rem;
+        border-radius: 15px;
+    }
+    
+    .update-profile-card h2 {
+        font-size: 1.6rem;
+    }
+    
+    .update-profile-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .update-profile-icon {
+        font-size: 2.5rem;
+    }
+    
+    .update-profile-form label {
+        font-size: 0.85rem;
+    }
+    
+    .update-profile-form input[type="text"],
+    .update-profile-form input[type="email"],
+    .update-profile-form select,
+    .update-profile-form textarea {
+        padding: 0.7rem 0.8rem;
+        padding-left: 2.2rem;
+        font-size: 0.9rem;
+        border-radius: 12px;
+    }
+    
+    .update-profile-btn {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+    }
+    
+    .back-profile-link {
+        font-size: 0.85rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .update-profile-card {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .update-profile-card h2 {
+        background: linear-gradient(135deg, #a29bfe, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .update-profile-subtitle {
+        color: #888;
+    }
+    
+    .update-profile-form label {
+        color: #ddd;
+    }
+    
+    .update-profile-form input[type="text"],
+    .update-profile-form input[type="email"],
+    .update-profile-form select,
+    .update-profile-form textarea {
+        background: rgba(50, 50, 60, 0.8);
+        color: #ddd;
+        border-color: #444;
+    }
+    
+    .update-profile-form input[type="text"]:focus,
+    .update-profile-form input[type="email"]:focus,
+    .update-profile-form select:focus,
+    .update-profile-form textarea:focus {
+        border-color: #a29bfe;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+    }
+    
+    .update-profile-form .helptext {
+        color: #888;
+    }
+    
+    .update-profile-form input[type="file"] {
+        background: rgba(50, 50, 60, 0.8);
+        border-color: #444;
+    }
+    
+    .back-profile-link {
+        color: #888;
+    }
+    
+    .back-profile-link:hover {
+        color: #a29bfe;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .update-profile-container {
+        background: white !important;
+    }
+    
+    .update-profile-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .update-profile-btn {
+        display: none;
+    }
+}
+
+/* Additional Effects */
+
+/* Success Animation */
+@keyframes successPulse {
+    0% {
+        transform: scale(1);
+    }
+    30% {
+        transform: scale(1.05);
+    }
+    60% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.update-profile-btn.success {
+    animation: successPulse 0.6s ease;
+    background: linear-gradient(135deg, #6bcb77, #2d9b4e);
+}
+
+/* Loading State */
+.update-profile-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.update-profile-btn.loading::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 0.5rem;
+    display: inline-block;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Focus States for Accessibility */
+.update-profile-btn:focus,
+.update-profile-form input:focus,
+.update-profile-form select:focus,
+.update-profile-form textarea:focus {
+    outline: 3px solid rgba(102, 126, 234, 0.3);
+    outline-offset: 2px;
+}
+
+/* Success Toast Notification */
+.toast-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #6bcb77, #2d9b4e);
+    color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.5s ease-out;
+    z-index: 1000;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.toast-success.hide {
+    animation: slideOutRight 0.5s ease-out forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Avatar Preview (Optional) */
+.avatar-preview {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.avatar-preview img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #667eea;
+}
+
+.avatar-preview .avatar-info {
+    flex: 1;
+}
+
+.avatar-preview .avatar-info .name {
+    font-weight: 600;
+    color: #2d3436;
+}
+
+.avatar-preview .avatar-info .email {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+/* Form Section Divider */
+.form-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e1e8ed, transparent);
+    margin: 1.5rem 0;
+}
+
+</style>
+
+
+
+
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div class="update-profile-container">
+
+    <div class="update-profile-card">
+
+        <div class="update-profile-icon">
+            👤
+        </div>
+
+        <h2>Update Profile</h2>
+
+        <p class="update-profile-subtitle">
+            Keep your profile information up to date.
+        </p>
+
+        <form method="POST" class="update-profile-form">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="update-profile-btn">
+                💾 Save Changes
+            </button>
+
+        </form>
+
+        <a href="{% url 'profile' %}" class="back-profile-link">
+            ⬅ Back to Profile
+        </a>
+
+    </div>
+
+</div>
+
 {% endblock %}

@@ -1,12 +1,769 @@
+<style>
+/* Restore Confirmation Page Styles */
+.restore-container {
+    max-width: 550px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated Gradient Border */
+.restore-container::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: conic-gradient(
+        from 0deg,
+        #6bcb77,
+        #2d9b4e,
+        #ffd93d,
+        #6bcb77,
+        #2d9b4e,
+        #6bcb77
+    );
+    border-radius: 32px;
+    z-index: -1;
+    animation: rotateBorder 6s linear infinite;
+    opacity: 0.8;
+}
+
+.restore-container::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    z-index: -1;
+}
+
+/* Floating Particles */
+.restore-container .particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+    animation: floatParticle 8s ease-in-out infinite;
+    z-index: 0;
+}
+
+.restore-container .particle:nth-child(1) {
+    width: 100px;
+    height: 100px;
+    background: #6bcb77;
+    top: -30px;
+    right: -30px;
+    animation-delay: 0s;
+}
+
+.restore-container .particle:nth-child(2) {
+    width: 70px;
+    height: 70px;
+    background: #2d9b4e;
+    bottom: -20px;
+    left: -20px;
+    animation-delay: 2s;
+}
+
+.restore-container .particle:nth-child(3) {
+    width: 50px;
+    height: 50px;
+    background: #ffd93d;
+    top: 50%;
+    left: -15px;
+    animation-delay: 4s;
+}
+
+.restore-container .particle:nth-child(4) {
+    width: 40px;
+    height: 40px;
+    background: #6bcb77;
+    bottom: 30%;
+    right: -10px;
+    animation-delay: 3s;
+}
+
+/* Restore Title */
+.restore-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #6bcb77, #2d9b4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: slideInDown 0.8s ease-out;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.restore-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #6bcb77, #2d9b4e);
+    border-radius: 4px;
+    animation: expandWidth 0.8s ease-out 0.3s both;
+}
+
+.restore-title .icon {
+    display: inline-block;
+    animation: bounce 2s ease-in-out infinite;
+    -webkit-text-fill-color: initial;
+}
+
+/* Restore Text */
+.restore-text {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+    position: relative;
+    z-index: 1;
+    padding: 0 0.5rem;
+}
+
+.restore-text strong {
+    color: #2d9b4e;
+    font-weight: 700;
+    font-size: 1.4rem;
+    display: inline-block;
+    position: relative;
+    padding: 0.2rem 0.8rem;
+    background: rgba(107, 203, 119, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    word-break: break-word;
+}
+
+.restore-text strong:hover {
+    background: rgba(107, 203, 119, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(107, 203, 119, 0.2);
+}
+
+.restore-text strong::before {
+    content: '🎯 ';
+    font-size: 1.2rem;
+}
+
+.restore-text .activity-icon {
+    display: inline-block;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Restore Animation */
+.restore-text .restore-animation {
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Button Group */
+.restore-btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+    position: relative;
+    z-index: 1;
+}
+
+/* Restore Button */
+.restore-btn {
+    padding: 0.8rem 2.5rem;
+    background: linear-gradient(135deg, #6bcb77, #2d9b4e);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 20px rgba(107, 203, 119, 0.4);
+    position: relative;
+    overflow: hidden;
+    min-width: 160px;
+    justify-content: center;
+}
+
+.restore-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.restore-btn:hover::before {
+    left: 100%;
+}
+
+.restore-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 35px rgba(107, 203, 119, 0.6);
+    background: linear-gradient(135deg, #5cb85c, #2d9b4e);
+}
+
+.restore-btn:active {
+    transform: scale(0.95);
+}
+
+.restore-btn .btn-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.restore-btn:hover .btn-icon {
+    transform: rotate(30deg) scale(1.2);
+}
+
+/* Restore Button Glow Effect */
+.restore-btn {
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(107, 203, 119, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 40px rgba(107, 203, 119, 0.7);
+    }
+}
+
+/* Cancel Button */
+.cancel-btn {
+    padding: 0.8rem 2.5rem;
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+    position: relative;
+    overflow: hidden;
+    min-width: 160px;
+    justify-content: center;
+}
+
+.cancel-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.cancel-btn:hover::before {
+    left: 100%;
+}
+
+.cancel-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(108, 92, 231, 0.5);
+    background: linear-gradient(135deg, #7c6cf0, #5a4bd1);
+}
+
+.cancel-btn:active {
+    transform: scale(0.95);
+}
+
+.cancel-btn .btn-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.cancel-btn:hover .btn-icon {
+    transform: rotate(90deg) scale(1.2);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rotateBorder {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes expandWidth {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+    to {
+        width: 60px;
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.1) rotate(-10deg);
+    }
+    75% {
+        transform: scale(1.1) rotate(10deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes floatParticle {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    25% {
+        transform: translate(40px, -30px) scale(1.2);
+    }
+    50% {
+        transform: translate(-30px, 40px) scale(0.9);
+    }
+    75% {
+        transform: translate(30px, -40px) scale(1.1);
+    }
+}
+
+/* Container Hover Effect */
+.restore-container:hover {
+    box-shadow: 
+        0 25px 70px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    transform: translateY(-2px);
+    transition: all 0.4s ease;
+}
+
+/* Restore Icon Animation */
+.restore-title .restore-icon {
+    display: inline-block;
+    animation: spinSlow 4s linear infinite;
+    -webkit-text-fill-color: initial;
+}
+
+@keyframes spinSlow {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Success Animation for Restore Button */
+.restore-btn.success {
+    background: linear-gradient(135deg, #ffd93d, #f7971e);
+    animation: successPulse 0.6s ease;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(1);
+    }
+    30% {
+        transform: scale(1.1);
+    }
+    60% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .restore-container {
+        margin: 1.5rem 1rem;
+        padding: 1.8rem;
+        border-radius: 20px;
+    }
+    
+    .restore-title {
+        font-size: 2.2rem;
+    }
+    
+    .restore-text {
+        font-size: 1rem;
+    }
+    
+    .restore-text strong {
+        font-size: 1.2rem;
+        padding: 0.1rem 0.6rem;
+    }
+    
+    .restore-btn,
+    .cancel-btn {
+        padding: 0.7rem 1.8rem;
+        font-size: 0.9rem;
+        min-width: 140px;
+    }
+    
+    .restore-btn-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .restore-container {
+        margin: 1rem 0.5rem;
+        padding: 1.2rem;
+        border-radius: 15px;
+    }
+    
+    .restore-container::before {
+        border-radius: 17px;
+    }
+    
+    .restore-container::after {
+        border-radius: 13px;
+    }
+    
+    .restore-title {
+        font-size: 1.8rem;
+    }
+    
+    .restore-title::after {
+        width: 40px;
+    }
+    
+    .restore-text {
+        font-size: 0.95rem;
+        padding: 0;
+    }
+    
+    .restore-text strong {
+        font-size: 1.1rem;
+        padding: 0.1rem 0.5rem;
+    }
+    
+    .restore-btn,
+    .cancel-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.85rem;
+        min-width: 120px;
+    }
+    
+    .restore-btn-group {
+        gap: 0.6rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .restore-container {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .restore-container::after {
+        background: rgba(30, 30, 40, 0.95);
+    }
+    
+    .restore-text {
+        color: #bbb;
+    }
+    
+    .restore-text strong {
+        background: rgba(107, 203, 119, 0.2);
+        color: #6bcb77;
+    }
+    
+    .restore-text strong:hover {
+        background: rgba(107, 203, 119, 0.3);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .restore-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .restore-btn-group {
+        display: none;
+    }
+}
+
+/* Additional Effects */
+
+/* Confetti Effect for Restore (Optional - for celebration) */
+.confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall 3s ease-out forwards;
+}
+
+.confetti-piece:nth-child(odd) {
+    background: #6bcb77;
+}
+
+.confetti-piece:nth-child(even) {
+    background: #ffd93d;
+}
+
+@keyframes confettiFall {
+    0% {
+        opacity: 1;
+        transform: translateY(-100px) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(720deg);
+    }
+}
+
+/* Success Toast Notification */
+.toast-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #6bcb77, #2d9b4e);
+    color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.5s ease-out;
+    z-index: 1000;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.toast-success.hide {
+    animation: slideOutRight 0.5s ease-out forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Activity Type Badge */
+.restore-text .activity-type {
+    display: inline-block;
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    background: rgba(107, 203, 119, 0.1);
+    color: #2d9b4e;
+    border: 1px solid rgba(107, 203, 119, 0.2);
+}
+
+/* Focus States for Accessibility */
+.restore-btn:focus,
+.cancel-btn:focus {
+    outline: 3px solid rgba(107, 203, 119, 0.5);
+    outline-offset: 3px;
+}
+
+/* Loading State for Restore Button */
+.restore-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.restore-btn.loading::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Restore Count Badge */
+.restore-title .count-badge {
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    color: #666;
+    -webkit-text-fill-color: #666;
+    backdrop-filter: blur(10px);
+}
+
+/* Hover Scale for Text */
+.restore-text strong {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.restore-text strong:hover {
+    transform: scale(1.08) rotate(1deg);
+}
+
+/* Success Stars Animation */
+@keyframes starBurst {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.5) rotate(180deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(360deg);
+        opacity: 1;
+    }
+}
+
+.star-burst {
+    display: inline-block;
+    animation: starBurst 0.8s ease-out forwards;
+}
+
+
+
+</style>
+
+
+
 {% extends 'main.html' %}
+
 {% block content %}
-<h2>Restore Activity</h2>
 
-<p>Are you sure you want to restore <strong>{{ object.name }}</strong>?</p>
+<div class="restore-container">
 
-<form method="post">
-  {% csrf_token %}
-  <button type="submit" class="btn btn-success">Yes, Restore</button>
-  <a href="{% url 'activity_history' %}" class="btn btn-secondary">Cancel</a>
-</form>
+    <h2 class="restore-title">♻️ Restore Activity</h2>
+
+    <p class="restore-text">
+        Are you sure you want to restore
+        <strong>{{ object.name }}</strong>?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="restore-btn-group">
+
+            <button type="submit" class="restore-btn">
+                ♻️ Yes, Restore
+            </button>
+
+            <a href="{% url 'activity_history' %}" class="cancel-btn">
+                ❌ Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
 {% endblock %}
