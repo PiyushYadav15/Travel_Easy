@@ -40,8 +40,6 @@ INSTALLED_APPS = [
     'destinations',
     'activities',
     'accounts',
-    'rest_framework',
-    'hotels_api',
     "whitenoise.runserver_nostatic",
 ]
 
